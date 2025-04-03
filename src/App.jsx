@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { debounce } from "lodash";
+// import { debounce } from "lodash";
 
 function App() {
   const [length, setLength] = useState(8);
@@ -9,6 +9,7 @@ function App() {
 
   // useref hook
   const passwordRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   // usecallable is used to memoize the function so that it doesn't get recreated on every render
   // this is important for performance optimization
@@ -32,12 +33,25 @@ function App() {
     window.navigator.clipboard.writeText(password);
   }, [password]);
 
-  const debouncedSetLength = useCallback(
-    debounce((newLength) => setLength(newLength), 300),
-    []
-  );
+  // const debouncedSetLength = useCallback(
+  //   debounce((newLength) => setLength(newLength), 300),
+  //   [length]
+  // );
+  const debouncedSetLength = useCallback((e) => {
+    const newLength = e.target.value;
 
-  // useEffect is used to call the passwordGenerator function whenever the length, numberAllowed or characterAllowed state changes
+    if (timeoutRef.current) {
+      console.log("datadata");
+      clearTimeout(timeoutRef.current);
+    }
+
+    
+    setLength(newLength);
+    timeoutRef.current = setTimeout(() => {
+      console.log("Updated value:", newLength);
+    }, 3000);
+  }, []);
+
   useEffect(() => {
     passwordGenerator();
     // return () => {
@@ -70,18 +84,19 @@ function App() {
           </button>
         </div>
         <div className="flex text-sm gap-x-2">
-          <div className="flex items-center gap-x-1">
+          <div className="flex items-center gap-x-1 justify-normal">
             <input
               type="range"
-              min={8}
-              max={100}
+              min="8"
+              max="100"
               value={length}
+              step="1"
               // onChange={(e) => setLength(e.target.value)}
-              onChange={(e) => debouncedSetLength(Number(e.target.value))}
+              onChange={(e) => debouncedSetLength(e)}
               id="length"
               className="outline-none w-full py-1 px-3"
             />
-            <label htmlFor="length">Length {length}</label>
+            <label htmlFor="length" className="text-nowrap" >Length: {length.toString()}</label>
           </div>
           <div className="flex items-center gap-x-1">
             <input
