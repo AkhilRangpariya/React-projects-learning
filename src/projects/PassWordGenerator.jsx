@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 // import { debounce } from "lodash";
 
-function App() {
+function PassWordGeneratorCom() {
   const [length, setLength] = useState(8);
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [characterAllowed, setCharacterAllowed] = useState(false);
@@ -124,4 +124,4 @@ function App() {
   );
 }
 
-export default App;
+export default PassWordGeneratorCom;
